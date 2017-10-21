@@ -1,12 +1,10 @@
 (ns tic-tac-toe-ai-clojure.core
-  (:require-macros
-   [reagent.ratom :refer [reaction]])
-  (:require
-   [reagent.core :as reagent]
-   [keechma.ui-component :as ui]
-   [keechma.controller :as controller]
-   [keechma.app-state :as app-state]
-   ))
+  (:require-macros [reagent.ratom :refer [reaction]])
+  (:require [reagent.core :as reagent]
+            [keechma.ui-component :as ui]
+            [keechma.controller :as controller]
+            [keechma.app-state :as app-state]
+            [tic-tac-toe-ai-clojure.components.game :as game]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,13 +52,17 @@
    {:renderer          counter-render
     :subscription-deps [:counter-value]}))
 
+(def Teste
+  (ui/constructor
+    {:renderer          (fn [] [:div [:h1 "Teste 1"]])
+    :subscription-deps [:counter-value]}))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Initialize App
 
 (def app-definition
-  {:components    {:main (assoc counter-component :topic :Counter)}
+  {:components    {:main (assoc game/component :topic :Counter)}
    :controllers   {:Counter (->Counter)}
    :subscriptions {:counter-value counter-value-sub}
    :html-element  (.getElementById js/document "app")})
