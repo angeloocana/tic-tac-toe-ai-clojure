@@ -13,7 +13,6 @@
   :black-shades (vector "#32342D")
 })
 
-
 (def theme {
   :colors colors
 })
@@ -21,27 +20,27 @@
 (def theme-game {
   :positions {
     :x {
-      :lineColor (get colors :white)
-      :lineWidth 4
-      :percentageByFrame 15
-      :delayAfterEachLine 10
+      :line-color (get colors :white)
+      :line-width 4
+      :percentage-by-frame 15
+      :delay-after-each-line 10
     }
     :o {
-      :lineColor (get colors :white)
-      :lineWidth 4
-      :percentageByFrame 5
+      :line-color (get colors :white)
+      :line-width 4
+      :percentage-by-frame 5
     }
   }
-  :boardLines {
-    :lineColor (get colors :white)
-    :lineWidth 2
-    :percentageByFrame 10
-    :delayAfterEachLine 10
+  :board-lines {
+    :line-color (get colors :white)
+    :line-width 2
+    :percentage-by-frame 10
+    :delay-after-each-line 10
   }
   :winLine {
-    :lineColor (get colors :green)
-    :lineWidth 8
-    :percentageByFrame 10
-    :delayAfterEachLine 10
+    :line-color (get colors :green)
+    :line-width 8
+    :percentage-by-frame 10
+    :delay-after-each-line 10
   }
 })
