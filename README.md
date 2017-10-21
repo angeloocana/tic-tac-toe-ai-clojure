@@ -68,3 +68,25 @@ Automatically recompile css file on change.
   lein clean
   lein cljsbuild once min
 ```
+
+## Template
+
+Link: [reagent-figwheel](https://github.com/gadfly361/reagent-figwheel)
+
+```bash
+  lein new reagent-figwheel tic-tac-toe-ai-clojure +garden +test +devtools +cider +keechma
+```
+
+* React
+  * [reagent](https://github.com/reagent-project/reagent)
+* CSS
+	* [garden](https://github.com/noprompt/garden) (`+garden`)
+* Development
+	* [cljs.test](https://github.com/clojure/clojurescript/blob/master/src/main/cljs/cljs/test.cljs) and [doo](https://github.com/bensu/doo) (`+test`)
+	* [cljs-devtools](https://github.com/binaryage/cljs-devtools) (`+devtools`)
+* Editor
+	* [cider](https://github.com/clojure-emacs/cider) (`+cider`)
+* Frameworks
+	* [keechma](https://github.com/keechma/keechma) (`+keechma`)
+* Hot reloading
+  * [lein-figwheel](https://github.com/bhauman/lein-figwheel)
