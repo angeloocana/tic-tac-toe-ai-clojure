@@ -1,10 +1,12 @@
 (ns tic-tac-toe-ai-clojure.core
-  (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [reagent.core :as reagent]
-            [keechma.ui-component :as ui]
-            [keechma.controller :as controller]
-            [keechma.app-state :as app-state]
-            [tic-tac-toe-ai-clojure.components.game :as game]))
+  (:require-macros
+   [reagent.ratom :refer [reaction]])
+  (:require
+   [reagent.core :as reagent]
+   [keechma.ui-component :as ui]
+   [keechma.controller :as controller]
+   [keechma.app-state :as app-state]
+   [tic-tac-toe-ai-clojure.components.game :as game]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
