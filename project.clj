@@ -1,61 +1,76 @@
-(defn- inside-container? []
-  (.exists (clojure.java.io/file "/.dockerenv")))
+(defproject tic-tac-toe-ai-clojure "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.9.229"]
+                 [reagent "0.6.1"]
+                 [garden "1.3.2"]
+                 [keechma "0.1.0-SNAPSHOT" :exclusions [cljsjs/react-with-addons]]]
 
+  :min-lein-version "2.5.3"
 
-(def figwheel-opts
-  (when (inside-container?)
-    (let [specified-host (if-let [x (System/getenv "FIGWHEEL_HOST")]
-                           (if (clojure.string/blank? (clojure.string/trim x)) nil x))
-          host (or specified-host "192.168.99.100")]
-      (when (nil? specified-host)
-        (println (str "***\n"
-                      "*** You did not specify a FIGWHEEL_HOST environment variable.\n"
-                      "*** Using the default: " host "\n"
-                      "***")))
-      {:websocket-url (str "ws://" host ":3449/figwheel-ws")})))
+  :source-paths ["src/clj"]
 
+  :plugins [[lein-cljsbuild "1.1.4"]
+            [lein-garden "0.2.8"]]
 
-(def figwheel-server-opts
-  (when (inside-container?)
-    {:hawk-options {:watcher :polling}}))
+  :clean-targets ^{:protect false} ["resources/public/js"
+                                    "target"
+                                    "test/js"
+                                    "resources/public/css"]
 
+  :figwheel {:css-dirs ["resources/public/css"]}
 
-(defproject angeloocana/tic-tac-toe-ai-clojure "0.0.1"
-  :dependencies
-  [
-   [dmohs/react "0.2.12"]
-   [org.clojure/clojure "1.7.0"]
-   [org.clojure/clojurescript "1.7.228"]
-   ]
-  :plugins [[lein-cljsbuild "1.1.2"] [lein-resource "15.10.2"]]
-  :profiles {:dev {:plugins [[lein-figwheel "0.5.0" :exclusions [org.clojure/clojure]]]
-                   :dependencies [[binaryage/devtools "0.5.2"]
-                                  [devcards "0.2.1" :exclusions [cljsjs/react]]]
-                   :cljsbuild
-                   {:builds {:client {:source-paths ["src/cljs/devtools"]
-                                      :compiler
-                                      {:optimizations :none
-                                       :source-map true
-                                       :source-map-timestamp true}
-                                      :figwheel ~(merge {} figwheel-opts)}}}
-                   :figwheel ~figwheel-server-opts}
-             :figwheel {:cljsbuild
-                        {:builds
-                         {:client {:source-paths ["src/cljs/figwheel"]
-                                   :compiler {:main "angeloocana.tic-tac-toe-ai-clojure.main"}}}}}
-             :devcards {:cljsbuild
-                        {:builds {:client {:source-paths ["src/cljs/devcards"]
-                                           :compiler {:main "angeloocana.tic-tac-toe-ai-clojure.devcards"}
-                                           :figwheel ~(merge figwheel-opts
-                                                             {:devcards true})}}}}
-             :deploy {:cljsbuild
-                      {:builds {:client {:source-paths ["src/cljs/deploy"]
-                                         :compiler
-                                         {:main "angeloocana.tic-tac-toe-ai-clojure.main"
-                                          :optimizations :simple
-                                          :pretty-print false}}}}}}
-  :cljsbuild {:builds {:client {:source-paths ["src/cljs/core"]
-                                :compiler {:output-dir "target/build"
-                                           :asset-path "build"
-                                           :output-to "target/compiled.js"}}}}
-  :resource {:resource-paths ["src/static"] :skip-stencil [#".*"]})
+  :garden {:builds [{:id           "screen"
+                     :source-paths ["src/clj"]
+                     :stylesheet   tic-tac-toe-ai-clojure.css/screen
+                     :compiler     {:output-to     "resources/public/css/screen.css"
+                                    :pretty-print? true}}]}
+
+  
+  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+
+  :profiles
+  {:dev
+   {:dependencies [
+                   [figwheel-sidecar "0.5.10"]
+                   [com.cemerick/piggieback "0.2.1"]
+                   [binaryage/devtools "0.8.2"]]
+
+    :plugins      [[lein-figwheel "0.5.10"]
+                   [lein-doo "0.1.7"]]
+    }}
+
+  :cljsbuild
+  {:builds
+   [{:id           "dev"
+     :source-paths ["src/cljs"]
+     :figwheel     {:on-jsload "tic-tac-toe-ai-clojure.core/reload"}
+     :compiler     {:main                 tic-tac-toe-ai-clojure.core
+                    :optimizations        :none
+                    :output-to            "resources/public/js/app.js"
+                    :output-dir           "resources/public/js/dev"
+                    :asset-path           "js/dev"
+                    :source-map-timestamp true
+                    :preloads             [devtools.preload]
+                    :external-config
+                    {:devtools/config
+                     {:features-to-install    [:formatters :hints]
+                      :fn-symbol              "F"
+                      :print-config-overrides true}}}}
+
+    {:id           "min"
+     :source-paths ["src/cljs"]
+     :compiler     {:main            tic-tac-toe-ai-clojure.core
+                    :optimizations   :advanced
+                    :output-to       "resources/public/js/app.js"
+                    :output-dir      "resources/public/js/min"
+                    :elide-asserts   true
+                    :closure-defines {goog.DEBUG false}
+                    :pretty-print    false}}
+
+    {:id           "test"
+     :source-paths ["src/cljs" "test/cljs"]
+     :compiler     {:output-to     "resources/public/js/test.js"
+                    :output-dir    "resources/public/js/test"
+                    :main          tic-tac-toe-ai-clojure.runner
+                    :optimizations :none}}
+    ]})
