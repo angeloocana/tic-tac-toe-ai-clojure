@@ -15,8 +15,11 @@
 })
 
 (defn get-next-game [old-game]
-  "TODO: Implement changes"
-  old-game)
+  (let [{:keys [ai-started score]} old-game]
+  (merge old-game {
+    :is-ai-turn (not ai-started)
+    :aiStarted (not ai-started)
+    score score})))
 
 (defn get-initial-game
   ([] initial-game)

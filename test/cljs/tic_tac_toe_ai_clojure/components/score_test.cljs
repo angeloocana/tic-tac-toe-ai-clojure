@@ -1,18 +1,9 @@
 (ns tic-tac-toe-ai-clojure.components.score-test
-  (:require [cljs.test :refer-macros [deftest testing is]]
-            [tic-tac-toe-ai-clojure.components.score :as score]
-            [tic-tac-toe-ai-clojure.game :as game]))
+  (:require [cljs.test :refer-macros [deftest testing is]])
+  (:use [tic-tac-toe-ai-clojure.components.score :only [component]]
+        [tic-tac-toe-ai-clojure.game :only [get-initial-game]]))
 
-(deftest render-initial-game
-  (testing "Render initial game"
-    (let [
-      initial-game (game/get-initial-game)
-      expected [:div 
-        [nil] 
-        [:i "You"] 
-        [:span 0] 
-        [:span "x"] 
-        [:span 0] 
-        [:i "AI"] 
-        [nil]]]
-    (is (= (score/component initial-game) expected)))))
+(deftest render-initial-score
+  "TODO: Test snapshot"
+  (testing "Render initial score"
+    (is (component (get-initial-game)))))
