@@ -5,11 +5,10 @@
 
 ;; Animation
 
-(defn add-frame [type frames data]
-  "Concat a new frame to frames"
-  (let [frame {:type type
-               :data data}]
-    (concat frames [frame])))
+(defn create-frame [type data]
+  "Create frame"
+  {:type type
+   :data data})
 
 ;; "Example per 20% => [0 20 40 60 80 100]"
 (def get-percentages 
@@ -24,27 +23,34 @@
 
 ;; Draw line
 
-(defn get-line-mid-point [from to per]
-  "Get line middle point by percentage 0.1 === 10%"
-  (let [[from-x from-y] from
+(defn get-line-mid-point [from to percentage]
+  "Get line middle point by percentage"
+  (let [per (/ percentage 100) ;; 10% => 0.1
+        [from-x from-y] from
         [to-x to-y] to]
     [(+ from-x (* per (- to-x from-x)))
      (+ from-y (* per (- to-y from-y)))]))
 
-(defn add-line-frame [frames line]
-  "Concat a new line frame to frames"
-  (add-frame "line" frames line))
+(defn create-line-frame [data]
+  "Create line frame"
+  (create-frame "line" data))
+
+;; Get a list of points [ [0 0] [0 10] [0 20] [0 30]]
+;; returns a list of pairs [from to] [ [[0 0] [0 10]] [[0 10] [0 20]] [[0 20] [030]]]
+(defn get-pairs-from-to
+  ([points]
+    (let [first-line [(first points) (second points)]]
+      (reduce get-pairs-from-to [first-line] (next (next points)))))
+  ([lines point]
+    (let [from (second (last lines))
+          line [from point]]
+      (concat lines [line]))))
 
 (defn get-line-frames [per from to]
-  ; ([per from to] (get-line-frames per from to per []))
-  ; ([per from to i frames]
-  ;   "Split line into small lines to draw by frame"
-  ;   (let [mid-line [(first (last frames))
-  ;                   (get-line-mid-point from to (/ i 100))]]
-  ;     (if (< per 100)
-  ;       (recur per from to (+ i per) (add-line-frame frames mid-line)) 
-  ;       frames))
-        )
+  (let [percentages (get-percentages per)
+        points (map (partial get-line-mid-point from to) percentages)
+        frames (get-pairs-from-to points)]
+    (map create-line-frame frames)))
 
 (defn get-lines-frames [theme lines]
   (map (get-line-frame (get theme :percentage-by-frame))))
