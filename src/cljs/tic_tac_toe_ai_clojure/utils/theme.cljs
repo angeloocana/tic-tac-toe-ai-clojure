@@ -1,8 +1,11 @@
 (ns tic-tac-toe-ai-clojure.utils.theme)
 
+(def black "#1E2019")
+(def white "#D3D0CB")
+
 (def colors {
-  :white "#D3D0CB"
-  :black "#1E2019"
+  :white white
+  :black black
   :yellow "#E2C044"
   :red "#FF0000"
   :darkBlue "#587B7F"
@@ -13,8 +16,13 @@
   :black-shades (vector "#32342D")
 })
 
+(def color white)
+(def background-color black)
+
 (def theme {
-  :colors colors
+  :colors colors,
+  :background-color background-color
+  :color color
 })
 
 (def theme-game {

@@ -1,12 +1,14 @@
 (ns tic-tac-toe-ai-clojure.components.canvas
   (:require [reagent.core :as reagent])
-  (:use [tic-tac-toe-ai-clojure.utils.canvas :only [draw!]]))
+  (:use [tic-tac-toe-ai-clojure.utils.canvas :only [draw!]]
+        [tic-tac-toe-ai-clojure.utils.theme :only [theme-game]]))
 
 (enable-console-print!)
 
-(defn component [theme game selectPosition]
+(defn component [game selectPosition]
   (let [dom-node (reagent/atom nil)
-        raf reagent/next-tick]
+        raf reagent/next-tick
+        theme theme-game]
     (reagent/create-class
       {
         :component-did-update
@@ -21,5 +23,5 @@
         :reagent-render
         (fn []          
           [:div
-            [:canvas]])
+            [:canvas {:width 200 :height 200}]])
       })))
