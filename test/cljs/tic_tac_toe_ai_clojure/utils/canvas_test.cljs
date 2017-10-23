@@ -10,7 +10,27 @@
           percentages (canvas/get-percentages percentage)]
           (is (= percentages expected-percentages)))))
 
-(deftest get-line-mid-point 
+(deftest get-nils-3
+  (testing "Get nils 3"
+    (let [n 3
+          expected-nils [nil nil nil]
+          nils (canvas/get-nils n)]
+      (is (= nils expected-nils)))))
+
+(deftest add-delay
+  (testing "Add delay"
+    (let [n-frames 2
+          lines [[[0 10] [0 20]]
+                 [[10 0] [20 0]]]
+          expected-frames [[[0 10] [0 20]]
+                           [[10 0] [20 0]]
+                           nil nil]
+          frames (canvas/add-delay n-frames lines)]
+      (is (= frames expected-frames)))))
+
+;; Draw line
+
+(deftest get-line-mid-point-0
   (testing "Get line mid point 0%"
     (let [from [0 0]
           to [0 100]
@@ -19,7 +39,7 @@
           mid-point (canvas/get-line-mid-point from to per)]
       (is (= mid-point expected-mid-point)))))
 
-(deftest get-line-mid-point 
+(deftest get-line-mid-point-100
   (testing "Get line mid point 100%"
     (let [from [0 0]
           to [0 100]
@@ -28,14 +48,13 @@
           mid-point (canvas/get-line-mid-point from to per)]
       (is (= mid-point expected-mid-point)))))
 
-;; Draw line
-
 (deftest get-line-frames-0-0-0-100-10
   (testing "Get line frames"
     (let [from [0 0] 
           to [0 100]
+          line [from to]
           percentage-by-frame 10
-          expected-lines [
+          expected-frames [
             { :type "line" :data [[0  0] [0  10]] }
             { :type "line" :data [[0 10] [0  20]] }
             { :type "line" :data [[0 20] [0  30]] }
@@ -47,8 +66,27 @@
             { :type "line" :data [[0 80] [0  90]] }
             { :type "line" :data [[0 90] [0 100]] }
           ]
-          lines (canvas/get-line-frames percentage-by-frame from to)]
-      (is (= lines expected-lines)))))
+          frames (canvas/get-line-frames percentage-by-frame line)]
+      (is (= frames expected-frames)))))
+
+(deftest get-lines-frames
+  (testing "Get lines frames"
+    (let [theme {:percentage-by-frame 25
+                 :delay-after-each-line 5}
+          lines [[[0 0][0 100]]
+                 [[0 0][100 0]]]
+          expected-frames [[{:type "line", :data [[0  0] [0  25]]}
+                            {:type "line", :data [[0 25] [0  50]]} 
+                            {:type "line", :data [[0 50] [0  75]]} 
+                            {:type "line", :data [[0 75] [0 100]]} 
+                            nil nil nil nil nil]
+                           [{:type "line", :data [[0  0] [25  0]]} 
+                            {:type "line", :data [[25 0] [50  0]]} 
+                            {:type "line", :data [[50 0] [75  0]]} 
+                            {:type "line", :data [[75 0] [100 0]]} 
+                            nil nil nil nil nil]]          
+          frames (canvas/get-lines-frames theme lines)]
+      (is (= frames expected-frames)))))
 
 ;; Draw board
 

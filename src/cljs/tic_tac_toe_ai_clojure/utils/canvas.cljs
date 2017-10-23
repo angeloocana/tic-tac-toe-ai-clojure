@@ -21,6 +21,14 @@
           (recur per (concat percentages [new-per]))
           (concat percentages [100])))))))
 
+(defn get-nils [n]
+  "Return a list of n nils"
+  (map (constantly nil) (range n)))
+
+(defn add-delay [n-frames lines]
+  "Concat n nil frames to the end of lines as delay"
+  (concat lines (get-nils n-frames)))
+
 ;; Draw line
 
 (defn get-line-mid-point [from to percentage]
@@ -46,14 +54,18 @@
           line [from point]]
       (concat lines [line]))))
 
-(defn get-line-frames [per from to]
-  (let [percentages (get-percentages per)
+(defn get-line-frames [per line]
+  (let [from (first line)
+        to (second line)
+        percentages (get-percentages per)
         points (map (partial get-line-mid-point from to) percentages)
         frames (get-pairs-from-to points)]
     (map create-line-frame frames)))
 
 (defn get-lines-frames [theme lines]
-  (map (get-line-frame (get theme :percentage-by-frame))))
+  (let [{:keys [percentage-by-frame delay-after-each-line]} theme
+        lines-frames (map (partial get-line-frames percentage-by-frame) lines)]
+    (map (partial add-delay delay-after-each-line) lines-frames)))
 
 (defn draw-line! [theme ctx line]
   "Draw a line to the canvas"
