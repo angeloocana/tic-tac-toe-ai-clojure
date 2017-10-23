@@ -75,16 +75,16 @@
                  :delay-after-each-line 5}
           lines [[[0 0][0 100]]
                  [[0 0][100 0]]]
-          expected-frames [[{:type "line", :data [[0  0] [0  25]]}
-                            {:type "line", :data [[0 25] [0  50]]} 
-                            {:type "line", :data [[0 50] [0  75]]} 
-                            {:type "line", :data [[0 75] [0 100]]} 
-                            nil nil nil nil nil]
-                           [{:type "line", :data [[0  0] [25  0]]} 
-                            {:type "line", :data [[25 0] [50  0]]} 
-                            {:type "line", :data [[50 0] [75  0]]} 
-                            {:type "line", :data [[75 0] [100 0]]} 
-                            nil nil nil nil nil]]          
+          expected-frames [{:type "line", :data [[0  0] [0  25]]}
+                           {:type "line", :data [[0 25] [0  50]]} 
+                           {:type "line", :data [[0 50] [0  75]]} 
+                           {:type "line", :data [[0 75] [0 100]]} 
+                           nil nil nil nil nil
+                           {:type "line", :data [[0  0] [25  0]]} 
+                           {:type "line", :data [[25 0] [50  0]]} 
+                           {:type "line", :data [[50 0] [75  0]]} 
+                           {:type "line", :data [[75 0] [100 0]]} 
+                           nil nil nil nil nil]
           frames (canvas/get-lines-frames theme lines)]
       (is (= frames expected-frames)))))
 

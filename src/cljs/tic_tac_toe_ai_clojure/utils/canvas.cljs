@@ -3,18 +3,18 @@
 (defn clear-canvas! [ctx width height]
   (.clearRect ctx 0 0 width height))
 
-;; Animation
+;; Get Animation
 
 (defn create-frame [type data]
   "Create frame"
   {:type type
    :data data})
 
-;; "Example per 20% => [0 20 40 60 80 100]"
-(def get-percentages 
+(def get-percentages
   (memoize (fn
     ([per] (get-percentages per [0]))
     ([per percentages]
+      "Get percentages example per 20% => [0 20 40 60 80 100]"
       (let [last-per (last percentages)
             new-per (+ per last-per)]
         (if (< new-per 100) 
@@ -29,7 +29,7 @@
   "Concat n nil frames to the end of lines as delay"
   (concat lines (get-nils n-frames)))
 
-;; Draw line
+;; Get line
 
 (defn get-line-mid-point [from to percentage]
   "Get line middle point by percentage"
@@ -65,7 +65,9 @@
 (defn get-lines-frames [theme lines]
   (let [{:keys [percentage-by-frame delay-after-each-line]} theme
         lines-frames (map (partial get-line-frames percentage-by-frame) lines)]
-    (map (partial add-delay delay-after-each-line) lines-frames)))
+    (flatten (map (partial add-delay delay-after-each-line) lines-frames))))
+
+;; Draw line
 
 (defn draw-line! [theme ctx line]
   "Draw a line to the canvas"
@@ -80,9 +82,28 @@
       (.lineTo ctx x y))
     (.stroke ctx)))
 
+;; Draw Arc
+
+(defn draw-arc! [theme ctx arc]
+  "TODO:")
+
+;; Draw Animation
+
+(defn draw-animation! [theme ctx raf frames _]
+  (if (empty? frames) nil
+    (let [frame (first frames)
+          raf-fn (partial draw-animation! theme ctx raf (next frames))]
+      (if (nil? frame)
+        (raf raf-fn)
+        (let [{:keys [type data]} frame]
+          (case type
+            "line" (draw-line! theme ctx data)
+            "arc" (draw-arc! theme ctx data))
+          (raf raf-fn))))))
+
 (defn draw-lines-animation! [theme ctx raf lines]
   (let [frames (get-lines-frames theme lines)]
-    (draw-animation! theme ctx raf frames)))
+    (draw-animation! theme ctx raf frames nil)))
     
 ;; Draw board
 
@@ -125,9 +146,9 @@
 
 (defn draw! [theme canvas raf game]
   (let [ctx (.getContext canvas "2d")
-        width (.-clientWidth canvas)
-        height (.-clientHeight canvas)]
-  (clear-canvas! ctx width height)
+        w (.-clientWidth canvas)
+        h (.-clientHeight canvas)]
+  (clear-canvas! ctx w h)
   (if (get game :started)
-    (draw-game! theme ctx raf game width height)
-    (draw-initial-game! theme ctx raf game))))
+    (draw-game! theme ctx raf game w h)
+    (draw-initial-game! theme ctx raf game w h))))
