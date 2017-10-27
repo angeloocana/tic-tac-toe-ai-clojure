@@ -19,13 +19,13 @@
 
 (deftest add-delay
   (testing "Add delay"
-    (let [n-frames 2
+    (let [theme {:delay-after-each-line 2}
           lines [[[0 10] [0 20]]
                  [[10 0] [20 0]]]
           expected-frames [[[0 10] [0 20]]
                            [[10 0] [20 0]]
                            nil nil]
-          frames (canvas/add-delay n-frames lines)]
+          frames (canvas/add-delay theme lines)]
       (is (= frames expected-frames)))))
 
 ;; Draw line
@@ -50,10 +50,10 @@
 
 (deftest get-line-frames-0-0-0-100-10
   (testing "Get line frames"
-    (let [from [0 0] 
+    (let [from [0 0]
           to [0 100]
           line [from to]
-          percentage-by-frame 10
+          theme {:percentage-by-frame 10}
           expected-frames [
             { :type "line" :data [[0  0] [0  10]] }
             { :type "line" :data [[0 10] [0  20]] }
@@ -66,7 +66,7 @@
             { :type "line" :data [[0 80] [0  90]] }
             { :type "line" :data [[0 90] [0 100]] }
           ]
-          frames (canvas/get-line-frames percentage-by-frame line)]
+          frames (canvas/get-line-frames theme line)]
       (is (= frames expected-frames)))))
 
 (deftest get-lines-frames

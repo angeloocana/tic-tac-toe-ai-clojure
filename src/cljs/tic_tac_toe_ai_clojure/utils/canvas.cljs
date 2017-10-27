@@ -25,9 +25,9 @@
   "Return a list of n nils"
   (map (constantly nil) (range n)))
 
-(defn add-delay [n-frames lines]
+(defn add-delay [theme lines]
   "Concat n nil frames to the end of lines as delay"
-  (concat lines (get-nils n-frames)))
+  (concat lines (get-nils (:delay-after-each-line theme))))
 
 ;; Get line
 
@@ -54,8 +54,9 @@
           line [from point]]
       (concat lines [line]))))
 
-(defn get-line-frames [per line]
-  (let [from (first line)
+(defn get-line-frames [theme line]
+  (let [per (:percentage-by-frame theme)
+        from (first line)
         to (second line)
         percentages (get-percentages per)
         points (map (partial get-line-mid-point from to) percentages)
@@ -63,9 +64,8 @@
     (map create-line-frame frames)))
 
 (defn get-lines-frames [theme lines]
-  (let [{:keys [percentage-by-frame delay-after-each-line]} theme
-        lines-frames (map (partial get-line-frames percentage-by-frame) lines)]
-    (flatten (map (partial add-delay delay-after-each-line) lines-frames))))
+  (let [lines-frames (map (partial get-line-frames theme) lines)]
+    (flatten (map (partial add-delay theme) lines-frames))))
 
 ;; Draw line
 
